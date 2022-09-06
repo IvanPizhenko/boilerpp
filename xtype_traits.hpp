@@ -3,28 +3,9 @@
 
 #pragma once
 
-#include <functional>
 #include <type_traits>
 
 namespace stdx {
-
-template<typename T, typename Hash = std::hash<T>>
-struct is_nothrow_hashable {
-    static constexpr bool value = noexcept(Hash::operator());
-};
-
-template<typename T, typename Hash = std::hash<T>>
-inline constexpr bool is_nothrow_hashable_v = is_nothrow_hashable<T, Hash>::value;
-
-template<class T, class Hash = std::hash<T>>
-struct is_nothrow_hash_combinable {
-    static constexpr bool value =
-        std::is_nothrow_constructible_v<Hash>
-        && stdx::is_nothrow_hashable_v<T, Hash>;
-};
-
-template<class T, class Hash = std::hash<T>>
-inline constexpr bool is_nothrow_hash_combinable_v = is_nothrow_hash_combinable<T, Hash>::value;
 
 // type_pack_element
 // @see http://ldionne.com/2015/11/29/efficient-parameter-pack-indexing/
@@ -32,7 +13,7 @@ inline constexpr bool is_nothrow_hash_combinable_v = is_nothrow_hash_combinable<
 #ifdef __clang__
 
 template <std::size_t Index, typename ...Types>
-using nth_element_t = __type_pack_element<Index, Types...>;
+using type_pack_element = __type_pack_element<Index, Types...>;
 
 #else
 

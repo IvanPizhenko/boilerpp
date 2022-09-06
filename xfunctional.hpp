@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "xtype_traits.hpp"
-
 #include <iterator>
 
 // Partially derived from:
@@ -22,6 +20,25 @@
 //------------------------------------------------------------------------------
 
 namespace stdx {
+
+
+template<typename T, typename Hash = std::hash<T>>
+struct is_nothrow_hashable {
+    static constexpr bool value = noexcept(Hash::operator());
+};
+
+template<typename T, typename Hash = std::hash<T>>
+inline constexpr bool is_nothrow_hashable_v = is_nothrow_hashable<T, Hash>::value;
+
+template<class T, class Hash = std::hash<T>>
+struct is_nothrow_hash_combinable {
+    static constexpr bool value =
+        std::is_nothrow_constructible_v<Hash>
+        && stdx::is_nothrow_hashable_v<T, Hash>;
+};
+
+template<class T, class Hash = std::hash<T>>
+inline constexpr bool is_nothrow_hash_combinable_v = is_nothrow_hash_combinable<T, Hash>::value;
 
 template <typename T, typename Hash = std::hash<T>>
 inline std::size_t hash_v(const T& x, Hash h = Hash{}) noexcept(is_nothrow_hashable_v<T, Hash>)
