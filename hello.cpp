@@ -5,14 +5,46 @@
 #include "vector_output.hpp"
 #include "xfunctional.hpp"
 #include "xnumeric.hpp"
+#include "scope.hpp"
 
 #include <iostream>
 #include <iterator>
+#include <stdexcept>
+
+void test1();
+void test2();
 
 int main()
+{
+    test2();
+    return 0;
+}
+
+void test1()
 {
     std::vector<int> v;
     stdx::iota_n(std::back_inserter(v), 5, 1);
     std::cout << v << " -> " << stdx::hash_v(v) << std::endl;
-    return 0;
+}
+
+void g(int x)
+{
+    if (x > 0)
+        throw std::invalid_argument("invalid x");
+}
+
+void test2()
+{
+    for (int x = 0; x < 2; ++x)
+    {
+        try {
+            std::cout << "x=" << x << ": entered" << std::endl;
+            stdx::scope_exit_hook on_exit([x]() { std::cout << "x=" << x << ": exited" << std::endl; });
+            stdx::scope_failure_hook on_failure([x]() { std::cout << "x=" << x << ": failed" << std::endl; });
+            stdx::scope_success_hook on_success([x]() { std::cout << "x=" << x << ": success" << std::endl; });
+            g(x);
+        } catch (std::exception& ex) {
+            std::cout << "x=" << x << ": exception: " << ex.what() << std::endl;
+        }
+    }
 }
