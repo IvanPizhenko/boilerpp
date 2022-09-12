@@ -59,7 +59,7 @@ void test2()
             }
             g(x);
         } catch (std::exception& ex) {
-            std::cout << "x=" << x << ": exception: " << ex.what() << std::endl;
+            std::cout << "x=" << x << ": error: " << ex.what() << std::endl;
         }
     }
 }
