@@ -29,19 +29,34 @@ void test1()
 
 void g(int x)
 {
-    if (x > 0)
+    if (x > 0 && x < 4)
         throw std::invalid_argument("invalid x");
 }
 
 void test2()
 {
-    for (int x = 0; x < 2; ++x)
+    for (int x = 0; x < 5; ++x)
     {
         try {
             std::cout << "x=" << x << ": entered" << std::endl;
             stdx::scope_exit_hook on_exit([x]() { std::cout << "x=" << x << ": exited" << std::endl; });
             stdx::scope_failure_hook on_failure([x]() { std::cout << "x=" << x << ": failed" << std::endl; });
             stdx::scope_success_hook on_success([x]() { std::cout << "x=" << x << ": success" << std::endl; });
+            switch (x) {
+                case 3: {
+                    on_exit.reset();
+                    break;
+                }
+                case 4: {
+                    on_failure.reset();
+                    break;
+                }
+                case 5: {
+                    on_success.reset();
+                    break;
+                }
+                default: break;
+            }
             g(x);
         } catch (std::exception& ex) {
             std::cout << "x=" << x << ": exception: " << ex.what() << std::endl;

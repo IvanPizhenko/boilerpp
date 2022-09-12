@@ -1,6 +1,8 @@
 #pragma once
 
-#include <optional>
+#if __cplusplus < 201703L
+#error scope.hpp requires C++17.
+#endif
 
 namespace stdx {
 
