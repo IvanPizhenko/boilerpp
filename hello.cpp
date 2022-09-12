@@ -43,15 +43,15 @@ void test2()
             stdx::scope_failure_hook on_failure([x]() { std::cout << "x=" << x << ": failed" << std::endl; });
             stdx::scope_success_hook on_success([x]() { std::cout << "x=" << x << ": success" << std::endl; });
             switch (x) {
-                case 3: {
+                case 2: {
                     on_exit.reset();
                     break;
                 }
-                case 4: {
+                case 3: {
                     on_failure.reset();
                     break;
                 }
-                case 5: {
+                case 4: {
                     on_success.reset();
                     break;
                 }
